@@ -162,6 +162,9 @@ body {
   </div>
 </div>
 
+<!-- ⭐ BACKGROUND MUSIC -->
+<audio id="bgMusic" src="/src/birthday-song.mp3" preload="auto"></audio>
+
 <script>
 /* CONFETTI */
 function confettiBlast() {
@@ -171,6 +174,9 @@ function confettiBlast() {
     if (Date.now() < end) requestAnimationFrame(frame);
   })();
 }
+
+/* AUDIO */
+const bgMusic = document.getElementById("bgMusic");
 
 /* COUNTDOWN */
 let count = 3;
@@ -193,7 +199,12 @@ setTimeout(() => {
       setTimeout(() => {
         document.getElementById("introScreen").style.display = "none";
         document.getElementById("cakeScreen").style.display = "flex";
+
         confettiBlast();
+
+        /* ⭐ START MUSIC WHEN CAKE SCREEN APPEARS */
+        bgMusic.currentTime = 0;
+        bgMusic.play().catch(()=>{});
       }, 300);
     }
   }, 1000);
@@ -210,6 +221,10 @@ document.getElementById("showGallery").onclick = () => {
   void rotate.offsetWidth;
   rotate.style.animation = "rotatePhone 3s ease forwards";
 
+  /* ⭐ STOP MUSIC BEFORE GALLERY OPENS */
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+
   setTimeout(() => {
     rotate.style.display = "none";
     document.getElementById("galleryScreen").style.display = "flex";
@@ -222,9 +237,6 @@ const images = [
   "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=800&q=80",
   "https://images.unsplash.com/photo-1514539079130-25950c84fdf1?w=800&q=80",
   "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
   "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&q=80"
 ];
 
@@ -232,7 +244,7 @@ const carousel = document.getElementById("carousel");
 let angle = 0;
 const total = images.length;
 const gap = 360 / total;
-const depth = 160; // centered depth
+const depth = 160;
 
 images.forEach((src, i) => {
   let div = document.createElement("div");
@@ -255,4 +267,3 @@ carousel.addEventListener("touchend", e => {
 
 </body>
 </html>
-
