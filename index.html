@@ -142,7 +142,10 @@ body {
 
 <!-- CAKE SCREEN -->
 <div id="cakeScreen" class="screen">
-  <img src="/src/sneha.gif" class="cake-gif" />
+
+  <!-- ⭐ IMPORTANT: FIXED GIF PATH FOR GITHUB PAGES -->
+  <img src="./src/sneha.gif" class="cake-gif" />
+
   <div class="cake-text">Happy Birthday!</div>
   <div class="cake-sub">May your life be filled with magic & sweet moments.</div>
   <button id="showGallery" class="btn">Show Gallery</button>
@@ -163,7 +166,7 @@ body {
 </div>
 
 <!-- ⭐ BACKGROUND MUSIC -->
-<audio id="bgMusic" src="/src/BirthdaySong.mp3" preload="auto"></audio>
+<audio id="bgMusic" src="./src/BirthdaySong.mp3" preload="auto"></audio>
 
 <script>
 /* CONFETTI */
@@ -202,7 +205,7 @@ setTimeout(() => {
 
         confettiBlast();
 
-        /* ⭐ START MUSIC WHEN CAKE SCREEN APPEARS */
+        /* ⭐ AUTOPLAY MUSIC ON CAKE SCREEN */
         bgMusic.currentTime = 0;
         bgMusic.play().catch(()=>{});
       }, 300);
@@ -212,6 +215,10 @@ setTimeout(() => {
 
 /* SHOW GALLERY */
 document.getElementById("showGallery").onclick = () => {
+
+  /* ⭐ IMPORTANT FOR iPHONE — UNLOCK AUDIO (NO UI CHANGE) */
+  bgMusic.play().then(()=>bgMusic.pause());
+
   document.getElementById("cakeScreen").style.display = "none";
   const rotate = document.getElementById("rotateScreen");
 
@@ -267,5 +274,3 @@ carousel.addEventListener("touchend", e => {
 
 </body>
 </html>
-
-
