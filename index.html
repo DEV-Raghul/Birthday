@@ -63,19 +63,6 @@ body {
   box-shadow: 0px 5px 20px rgba(255,255,255,0.3);
 }
 
-/* ROTATE SCREEN */
-#rotateScreen {
-  display: none;
-  color: white;
-  font-size: 26px;
-  animation: rotatePhone 3s ease forwards;
-}
-
-@keyframes rotatePhone {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(90deg); }
-}
-
 /* GALLERY SCREEN */
 #galleryScreen { display: none; }
 .gallery-title {
@@ -147,11 +134,6 @@ body {
   <button id="showGallery" class="btn">Show Gallery</button>
 </div>
 
-<!-- ROTATE PHONE SCREEN -->
-<div id="rotateScreen" class="screen">
-  <div>📱 Please rotate your phone ↻</div>
-</div>
-
 <!-- GALLERY SCREEN -->
 <div id="galleryScreen" class="screen">
   <div class="gallery-title"></div>
@@ -161,8 +143,8 @@ body {
   </div>
 </div>
 
-<!-- ⭐ BACKGROUND MUSIC (muted autoplay hack) -->
-<audio id="bgMusic" src="./src/BirthdaySong.mp3" preload="auto" muted></audio>
+<!-- ⭐ BACKGROUND MUSIC -->
+<audio id="bgMusic" src="./src/BirthdaySong.mp3" preload="auto"></audio>
 
 <script>
 /* CONFETTI */
@@ -175,6 +157,17 @@ function confettiBlast() {
 }
 
 const bgMusic = document.getElementById("bgMusic");
+
+/* ⭐ AUTOPLAY AFTER 3 SECONDS */
+setTimeout(() => {
+  bgMusic.muted = true; 
+  bgMusic.play().then(() => {
+    setTimeout(() => {
+      bgMusic.muted = false;
+      bgMusic.volume = 1;
+    }, 300);
+  }).catch(err => console.log("Autoplay blocked:", err));
+}, 3000);
 
 /* COUNTDOWN */
 let count = 3;
@@ -197,9 +190,7 @@ setTimeout(() => {
       setTimeout(() => {
         document.getElementById("introScreen").style.display = "none";
         document.getElementById("cakeScreen").style.display = "flex";
-
         confettiBlast();
-
       }, 300);
     }
   }, 1000);
@@ -207,24 +198,13 @@ setTimeout(() => {
 
 /* SHOW GALLERY */
 document.getElementById("showGallery").onclick = () => {
-  bgMusic.play().then(()=>bgMusic.pause());
 
-  document.getElementById("cakeScreen").style.display = "none";
-  const rotate = document.getElementById("rotateScreen");
-
-  rotate.style.display = "flex";
-
-  rotate.style.animation = "none";
-  void rotate.offsetWidth;
-  rotate.style.animation = "rotatePhone 3s ease forwards";
-
+  /* ⭐ STOP MUSIC WHEN SHOW GALLERY CLICKED */
   bgMusic.pause();
   bgMusic.currentTime = 0;
 
-  setTimeout(() => {
-    rotate.style.display = "none";
-    document.getElementById("galleryScreen").style.display = "flex";
-  }, 3000);
+  document.getElementById("cakeScreen").style.display = "none";
+  document.getElementById("galleryScreen").style.display = "flex";
 };
 
 /* CAROUSEL */
@@ -261,17 +241,6 @@ carousel.addEventListener("touchend", e => {
   if (endX < startX - 40) angle += gap * -1;
   if (endX > startX + 40) angle += gap;
   carousel.style.transform = `rotateY(${angle}deg)`;
-});
-
-/* ⭐ REAL AUTOPLAY ON PAGE LOAD (muted → unmute) */
-window.addEventListener("load", () => {
-  bgMusic.muted = true;
-  bgMusic.play().then(() => {
-    setTimeout(() => {
-      bgMusic.muted = false;
-      bgMusic.volume = 1;
-    }, 500);
-  }).catch(e => console.log("Autoplay blocked:", e));
 });
 </script>
 
