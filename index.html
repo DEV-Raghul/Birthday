@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Birthday Wish</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #9333ea, #ec4899);
+  height: 100vh;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 10px;
+  text-align: center;
+}
+
+/* INTRO */
+#introScreen h1 { color: white; font-size: 32px; }
+#introScreen p { color: white; font-size: 18px; }
+
+#countdown {
+  color: white;
+  font-size: 44px;
+  margin-top: 10px;
+  font-weight: bold;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* CAKE SCREEN */
+#cakeScreen { display: none; }
+
+.cake-gif {
+  width: 220px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.cake-text { color: white; font-size: 24px; margin-top: 8px; }
+.cake-sub { color: white; font-size: 16px; margin-top: 2px; }
+
+.btn {
+  padding: 12px 26px;
+  margin-top: 18px;
+  background: white;
+  color: #db2777;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0px 5px 20px rgba(255,255,255,0.3);
+}
+
+/* ROTATE SCREEN */
+#rotateScreen {
+  display: none;
+  color: white;
+  font-size: 26px;
+  animation: rotatePhone 3s ease forwards;
+}
+
+@keyframes rotatePhone {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(90deg); }
+}
+
+/* GALLERY SCREEN */
+#galleryScreen { display: none; }
+.gallery-title {
+  color: white;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+/* -------- FIXED CENTERED CAROUSEL -------- */
+.carousel-container {
+  width: 100%;
+  max-width: 330px;
+  height: 230px;
+  position: relative;
+  perspective: 900px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.carousel {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+}
+
+.carousel-item {
+  width: 130px;
+  height: 180px;
+  position: absolute;
+  left: 50%;
+  transform-style: preserve-3d;
+  border-radius: 12px;
+  overflow: hidden;
+  transform-origin: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 480px) {
+  .carousel-container { height: 190px; max-width: 260px; }
+  .carousel-item { width: 120px; height: 160px; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO SCREEN -->
+<div id="introScreen" class="screen">
+  <h1>Happy Birthday!</h1>
+  <p>Wishing you joy, love & lots of cake 🎂</p>
+  <div id="countdown">3</div>
+</div>
+
+<!-- CAKE SCREEN -->
+<div id="cakeScreen" class="screen">
+  <img src="/src/happy-birthday-gif-cake-bunny-sneha.gif" class="cake-gif" />
+  <div class="cake-text">Happy Birthday!</div>
+  <div class="cake-sub">May your life be filled with magic & sweet moments.</div>
+  <button id="showGallery" class="btn">Show Gallery</button>
+</div>
+
+<!-- ROTATE PHONE SCREEN -->
+<div id="rotateScreen" class="screen">
+  <div>📱 Please rotate your phone ↻</div>
+</div>
+
+<!-- GALLERY SCREEN -->
+<div id="galleryScreen" class="screen">
+  <div class="gallery-title">Birthday Gallery</div>
+
+  <div class="carousel-container">
+    <div class="carousel" id="carousel"></div>
+  </div>
+</div>
+
+<script>
+/* CONFETTI */
+function confettiBlast() {
+  const end = Date.now() + 2000;
+  (function frame() {
+    confetti({ particleCount: 10, spread: 70 });
+    if (Date.now() < end) requestAnimationFrame(frame);
+  })();
+}
+
+/* COUNTDOWN */
+let count = 3;
+const countdownEl = document.getElementById("countdown");
+
+setTimeout(() => {
+  countdownEl.style.opacity = 1;
+
+  const timer = setInterval(() => {
+    countdownEl.innerText = count;
+    count--;
+
+    countdownEl.style.transform = "scale(1.2)";
+    setTimeout(() => countdownEl.style.transform = "scale(1)", 150);
+
+    if (count < 0) {
+      clearInterval(timer);
+      countdownEl.style.opacity = 0;
+
+      setTimeout(() => {
+        document.getElementById("introScreen").style.display = "none";
+        document.getElementById("cakeScreen").style.display = "flex";
+        confettiBlast();
+      }, 300);
+    }
+  }, 1000);
+}, 400);
+
+/* SHOW GALLERY */
+document.getElementById("showGallery").onclick = () => {
+  document.getElementById("cakeScreen").style.display = "none";
+  const rotate = document.getElementById("rotateScreen");
+
+  rotate.style.display = "flex";
+
+  rotate.style.animation = "none";
+  void rotate.offsetWidth;
+  rotate.style.animation = "rotatePhone 3s ease forwards";
+
+  setTimeout(() => {
+    rotate.style.display = "none";
+    document.getElementById("galleryScreen").style.display = "flex";
+  }, 3000);
+};
+
+/* CAROUSEL */
+const images = [
+  "https://images.unsplash.com/photo-1544126596-0df5b2a7a8b5?w=800&q=80",
+  "https://images.unsplash.com/photo-1504198453319-5ce911bafcde?w=800&q=80",
+  "https://images.unsplash.com/photo-1514539079130-25950c84fdf1?w=800&q=80",
+  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
+  "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=800&q=80"
+];
+
+const carousel = document.getElementById("carousel");
+let angle = 0;
+const total = images.length;
+const gap = 360 / total;
+const depth = 160; // centered depth
+
+images.forEach((src, i) => {
+  let div = document.createElement("div");
+  div.className = "carousel-item";
+  div.style.transform = `rotateY(${gap * i}deg) translateZ(${depth}px) translateX(-50%)`;
+  div.innerHTML = `<img src="${src}" />`;
+  carousel.appendChild(div);
+});
+
+/* Swipe */
+let startX = 0;
+carousel.addEventListener("touchstart", e => startX = e.touches[0].clientX);
+carousel.addEventListener("touchend", e => {
+  let endX = e.changedTouches[0].clientX;
+  if (endX < startX - 40) angle += gap * -1;
+  if (endX > startX + 40) angle += gap;
+  carousel.style.transform = `rotateY(${angle}deg)`;
+});
+</script>
+
+</body>
+</html>
